@@ -1,0 +1,20 @@
+{
+  "name": "dtcd-storagesystem",
+  "version": "0.1.0",
+  "description": "DTCD storage system plugin",
+  "private": true,
+  "homepage": "https://github.com/ISGNeuroTeam/DTCD-StorageSystem",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -cw"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "rollup": "^2.38.0"
+  },
+  "devDependencies": {
+    "rollup-plugin-livereload": "^2.0.0"
+  }
+}

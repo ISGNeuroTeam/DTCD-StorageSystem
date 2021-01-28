@@ -1,4 +1,4 @@
-import { SystemPlugin, EventSystemAdapter } from '../DTCD-SDK/index'
+import { SystemPlugin, EventSystemAdapter, LogSystemAdapter } from './../../../DTCD-SDK/index'
 import { TYPE_SESSION, TYPE_PERSIST } from './utils/storageTypes';
 import { initializeVuexModule } from './utils/initializeVuexModule';
 import pluginRegistrationMeta from './pluginRegistrationMeta';
@@ -13,22 +13,21 @@ const throwError = (message) => {
  * StorageSystem core plugin.
  * @extends SystemPlugin
  */
-export class DataCADPlugin extends SystemPlugin {
+export class Plugin extends SystemPlugin {
 
   static getRegistrationMeta () {
     return pluginRegistrationMeta;
   }
 
-  static register (pluginRegistrator) {
-    pluginRegistrator.register(DataCADPlugin.getRegistrationMeta());
-  }
-
-  constructor (VueJS, Vuex) {
+  constructor (guid) {
     super();
+    this.guid = guid;
+    const VueJS = this.getDependence("Vue")
+    const Vuex = this.getDependence("Vuex")
 
     this.eventSystem = new EventSystemAdapter();
+    this.logSystem = new LogSystemAdapter(guid, vuexModuleName)
     this.validStorageTypes = [TYPE_SESSION, TYPE_PERSIST];
-    this.getRegistrationMeta = DataCADPlugin.getRegistrationMeta;
 
     const vue = VueJS.default;
     vue.use(Vuex);
@@ -96,6 +95,7 @@ export class DataCADPlugin extends SystemPlugin {
    * @param {string} storage Storage type.
    */
   addRecord (key, value, storage = TYPE_SESSION) {
+    this.logSystem.log(`Add record ${key}`)
     this._createRecord('add', { key, value, storage });
   }
 

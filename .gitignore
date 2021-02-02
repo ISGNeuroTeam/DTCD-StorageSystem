@@ -3,6 +3,7 @@ DTCD-SDK
 node_modules
 dist
 build
+*tar.gz
 
 # MacOS file
 .DS_Store

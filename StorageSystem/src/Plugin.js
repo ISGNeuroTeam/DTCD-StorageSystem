@@ -1,4 +1,4 @@
-import { SystemPlugin, EventSystemAdapter, LogSystemAdapter } from './../../../DTCD-SDK/index'
+import { SystemPlugin, EventSystemAdapter, LogSystemAdapter } from '../../../DTCD-SDK/index'
 import { TYPE_SESSION, TYPE_PERSIST } from './utils/storageTypes';
 import { initializeVuexModule } from './utils/initializeVuexModule';
 import pluginMeta from './Plugin.Meta';
@@ -21,12 +21,12 @@ export class Plugin extends SystemPlugin {
 
   constructor (guid) {
     super();
-    this.guid = guid;
-    const VueJS = this.getDependence("Vue")
-    const Vuex = this.getDependence("Vuex")
+
+    const VueJS = this.getDependence('Vue');
+    const Vuex = this.getDependence('Vuex');
 
     this.eventSystem = new EventSystemAdapter();
-    this.logSystem = new LogSystemAdapter(guid, vuexModuleName)
+    this.logSystem = new LogSystemAdapter(guid, pluginMeta.name);
     this.validStorageTypes = [TYPE_SESSION, TYPE_PERSIST];
 
     const vue = VueJS.default;
@@ -42,6 +42,14 @@ export class Plugin extends SystemPlugin {
 
     this._dispatch = this._store.dispatch;
     this._sessionStorage = this._store.state[vuexModuleName];
+
+    console.log('--------------------');
+    this.addRecord('key', 'TEST_VALUE');
+    this.putRecord('key', 'NEW_TEST_VALUE');
+    this.hasRecord('key');
+    console.log(this.getRecord('key'));
+    this.removeRecord('key');
+    this.clearStorage();
   }
 
   _checkStorageType (type) {
@@ -95,8 +103,8 @@ export class Plugin extends SystemPlugin {
    * @param {string} storage Storage type.
    */
   addRecord (key, value, storage = TYPE_SESSION) {
-    this.logSystem.log(`Add record ${key}`)
     this._createRecord('add', { key, value, storage });
+    this.logSystem.log(`Added record with key "${key}"`);
   }
 
   /**
@@ -108,6 +116,7 @@ export class Plugin extends SystemPlugin {
    */
   putRecord (key, value, storage = TYPE_SESSION) {
     this._createRecord('put', { key, value, storage });
+    this.logSystem.log(`Putted record with key "${key}"`);
   }
 
   /**
@@ -154,6 +163,8 @@ export class Plugin extends SystemPlugin {
     }
 
     this._dispatch(`${vuexModuleName}/removeRecord`, key);
+
+    this.logSystem.log(`Record with key "${key}" has been removed`);
     return 'success';
   }
 
@@ -171,6 +182,7 @@ export class Plugin extends SystemPlugin {
     }
 
     this._dispatch(`${vuexModuleName}/clear`);
+    this.logSystem.log('Storage has been cleared');
     return 'success';
   }
 

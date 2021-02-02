@@ -1,7 +1,7 @@
 import { SystemPlugin, EventSystemAdapter, LogSystemAdapter } from './../../../DTCD-SDK/index'
 import { TYPE_SESSION, TYPE_PERSIST } from './utils/storageTypes';
 import { initializeVuexModule } from './utils/initializeVuexModule';
-import pluginRegistrationMeta from './pluginRegistrationMeta';
+import pluginMeta from './Plugin.Meta';
 
 const vuexModuleName = 'UserDataStorage';
 
@@ -16,7 +16,7 @@ const throwError = (message) => {
 export class Plugin extends SystemPlugin {
 
   static getRegistrationMeta () {
-    return pluginRegistrationMeta;
+    return pluginMeta;
   }
 
   constructor (guid) {

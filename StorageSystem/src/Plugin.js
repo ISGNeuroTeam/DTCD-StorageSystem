@@ -42,14 +42,6 @@ export class Plugin extends SystemPlugin {
 
     this._dispatch = this._store.dispatch;
     this._sessionStorage = this._store.state[vuexModuleName];
-
-    console.log('--------------------');
-    this.addRecord('key', 'TEST_VALUE');
-    this.putRecord('key', 'NEW_TEST_VALUE');
-    this.hasRecord('key');
-    console.log(this.getRecord('key'));
-    this.removeRecord('key');
-    this.clearStorage();
   }
 
   _checkStorageType (type) {

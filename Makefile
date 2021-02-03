@@ -51,6 +51,7 @@ clean:
 test: $(PROJECT_NAME)/node_modules
 	# required section
 	echo Testing started...
+	npm run test --prefix ./$(PROJECT_NAME)
 	echo Testing completed.
 	# required section
 

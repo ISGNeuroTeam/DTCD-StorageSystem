@@ -1,4 +1,4 @@
-import { SystemPlugin, EventSystemAdapter, LogSystemAdapter } from '../../../DTCD-SDK/index'
+import { SystemPlugin, EventSystemAdapter, LogSystemAdapter } from './../../DTCD-SDK/index';
 import { TYPE_SESSION, TYPE_PERSIST } from './utils/storageTypes';
 import { initializeVuexModule } from './utils/initializeVuexModule';
 import pluginMeta from './Plugin.Meta';

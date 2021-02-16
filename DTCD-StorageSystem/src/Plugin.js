@@ -1,5 +1,4 @@
-import { SystemPlugin, EventSystemAdapter, LogSystemAdapter } from './../../DTCD-SDK/index';
-import { TYPE_SESSION, TYPE_PERSIST } from './utils/storageTypes';
+import { SystemPlugin, LogSystemAdapter } from './../../DTCD-SDK/index';
 import { initializeVuexModule } from './utils/initializeVuexModule';
 import pluginMeta from './Plugin.Meta';
 
@@ -25,9 +24,7 @@ export class Plugin extends SystemPlugin {
     const VueJS = this.getDependence('Vue');
     const Vuex = this.getDependence('Vuex');
 
-    this.eventSystem = new EventSystemAdapter();
     this.logSystem = new LogSystemAdapter(guid, pluginMeta.name);
-    this.validStorageTypes = [TYPE_SESSION, TYPE_PERSIST];
 
     const vue = VueJS.default;
     vue.use(Vuex);
@@ -44,14 +41,6 @@ export class Plugin extends SystemPlugin {
     this._sessionStorage = this._store.state[vuexModuleName];
   }
 
-  _checkStorageType (type) {
-    if (typeof type !== 'string') {
-      throwError('Invalid storage type');
-    } else if (!this.validStorageTypes.includes(type)) {
-      throwError('Storage type must be "session" or "persist"');
-    }
-  }
-
   _checkRecordKey (key) {
     if (typeof key !== 'string') {
       throwError('Record key must be a string');
@@ -60,28 +49,21 @@ export class Plugin extends SystemPlugin {
     }
   }
 
-  _isKeyExistInStorage (key, storage) {
-    this._checkStorageType(storage);
-    this._checkRecordKey(key);
-    return storage === TYPE_PERSIST ? false : key in this._sessionStorage;
+  _isKeyExistInStorage (key) {
+    return key in this._sessionStorage;
   }
 
-  _createRecord (createType, { key, value, storage }) {
-    this._checkStorageType(storage);
+  _createRecord (createType, { key, value }) {
     this._checkRecordKey(key);
 
     if (createType === 'add') {
-      if (this._isKeyExistInStorage(key, storage)) {
+      if (this._isKeyExistInStorage(key)) {
         throwError(`Record with key "${key}" already exists`);
       }
     }
 
     if (typeof value === 'function') {
       throwError('Record value cannot be a function');
-    }
-
-    if (storage === TYPE_PERSIST) {
-      return console.warn('Будет добавлено в IndexedDB');
     }
 
     this._dispatch(`${vuexModuleName}/addRecord`, { key, value });
@@ -92,10 +74,9 @@ export class Plugin extends SystemPlugin {
    * @method
    * @param {string} key Record key name.
    * @param {*} value Record stored value.
-   * @param {string} storage Storage type.
    */
-  addRecord (key, value, storage = TYPE_SESSION) {
-    this._createRecord('add', { key, value, storage });
+  addRecord (key, value) {
+    this._createRecord('add', { key, value });
     this.logSystem.log(`Added record with key "${key}"`);
   }
 
@@ -104,10 +85,9 @@ export class Plugin extends SystemPlugin {
    * @method
    * @param {string} key Record key name.
    * @param {*} value Record stored value.
-   * @param {string} storage Storage type.
    */
-  putRecord (key, value, storage = TYPE_SESSION) {
-    this._createRecord('put', { key, value, storage });
+  putRecord (key, value) {
+    this._createRecord('put', { key, value });
     this.logSystem.log(`Putted record with key "${key}"`);
   }
 
@@ -115,28 +95,19 @@ export class Plugin extends SystemPlugin {
    * Check for a record in the storage.
    * @method
    * @param {string} key Record key name.
-   * @param {string} storage Storage type.
    * @returns {boolean} Returns true if record exists in storage.
    */
-  hasRecord (key, storage = TYPE_SESSION) {
-    return this._isKeyExistInStorage(key, storage);
+  hasRecord (key) {
+    return this._isKeyExistInStorage(key);
   }
 
   /**
    * Get record value from storage by key.
    * @method
    * @param {string} key Record key name.
-   * @param {string} storage Storage type.
    * @returns {*} Storage record value.
    */
-  getRecord (key, storage = TYPE_SESSION) {
-    this._checkStorageType(storage);
-
-    if (storage === TYPE_PERSIST) {
-      console.warn(`Запись с ключом "${key}" из IndexedDB`);
-      return 'record';
-    }
-
+  getRecord (key) {
     return this._store.getters['UserDataStorage/getRecord'](key);
   }
 
@@ -144,35 +115,20 @@ export class Plugin extends SystemPlugin {
    * Delete record from storage by key.
    * @method
    * @param {string} key Record key name.
-   * @param {string} storage Storage type.
+   * @returns {string} Operation result.
    */
-  removeRecord (key, storage = TYPE_SESSION) {
-    this._checkStorageType(storage);
-
-    if (storage === TYPE_PERSIST) {
-      console.warn('Будет удалено из IndexedDB');
-      return 'success';
-    }
-
+  removeRecord (key) {
     this._dispatch(`${vuexModuleName}/removeRecord`, key);
-
     this.logSystem.log(`Record with key "${key}" has been removed`);
     return 'success';
   }
 
   /**
-   * Clear the specified storage type.
+   * Removing all records from storage.
    * @method
-   * @param {string} storage Storage type.
+   * @returns {string} Operation result.
    */
-  clearStorage (storage = TYPE_SESSION) {
-    this._checkStorageType(storage);
-
-    if (storage === TYPE_PERSIST) {
-      console.warn('Будет очищено хранилище IndexedDB');
-      return 'success';
-    }
-
+  clearStorage () {
     this._dispatch(`${vuexModuleName}/clear`);
     this.logSystem.log('Storage has been cleared');
     return 'success';

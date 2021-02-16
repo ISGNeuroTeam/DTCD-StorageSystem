@@ -1,5 +1,4 @@
 import { SystemPlugin, EventSystemAdapter, LogSystemAdapter } from './../../DTCD-SDK/index';
-import { TYPE_SESSION, TYPE_PERSIST } from './utils/storageTypes';
 import { initializeVuexModule } from './utils/initializeVuexModule';
 import pluginMeta from './Plugin.Meta';
 
@@ -27,7 +26,6 @@ export class Plugin extends SystemPlugin {
 
     this.eventSystem = new EventSystemAdapter();
     this.logSystem = new LogSystemAdapter(guid, pluginMeta.name);
-    this.validStorageTypes = [TYPE_SESSION, TYPE_PERSIST];
 
     const vue = VueJS.default;
     vue.use(Vuex);
@@ -42,14 +40,6 @@ export class Plugin extends SystemPlugin {
 
     this._dispatch = this._store.dispatch;
     this._sessionStorage = this._store.state[vuexModuleName];
-  }
-
-  _checkStorageType (type) {
-    if (typeof type !== 'string') {
-      throwError('Invalid storage type');
-    } else if (!this.validStorageTypes.includes(type)) {
-      throwError('Storage type must be "session" or "persist"');
-    }
   }
 
   _checkRecordKey (key) {

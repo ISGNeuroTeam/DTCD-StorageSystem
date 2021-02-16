@@ -115,6 +115,7 @@ export class Plugin extends SystemPlugin {
    * Delete record from storage by key.
    * @method
    * @param {string} key Record key name.
+   * @returns {string} Operation result.
    */
   removeRecord (key) {
     this._dispatch(`${vuexModuleName}/removeRecord`, key);
@@ -123,8 +124,9 @@ export class Plugin extends SystemPlugin {
   }
 
   /**
-   * Clear the specified storage type.
+   * Removing all records from storage.
    * @method
+   * @returns {string} Operation result.
    */
   clearStorage () {
     this._dispatch(`${vuexModuleName}/clear`);

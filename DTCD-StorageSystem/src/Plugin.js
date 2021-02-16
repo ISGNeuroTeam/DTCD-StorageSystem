@@ -1,4 +1,4 @@
-import { SystemPlugin, EventSystemAdapter, LogSystemAdapter } from './../../DTCD-SDK/index';
+import { SystemPlugin, LogSystemAdapter } from './../../DTCD-SDK/index';
 import { initializeVuexModule } from './utils/initializeVuexModule';
 import pluginMeta from './Plugin.Meta';
 
@@ -24,7 +24,6 @@ export class Plugin extends SystemPlugin {
     const VueJS = this.getDependence('Vue');
     const Vuex = this.getDependence('Vuex');
 
-    this.eventSystem = new EventSystemAdapter();
     this.logSystem = new LogSystemAdapter(guid, pluginMeta.name);
 
     const vue = VueJS.default;

@@ -1,0 +1,13 @@
+[{
+  "name": "Vue",
+  "fileName": "vue.js",
+  "type": "esm",
+  "version": "2.6.12",
+  "source":"https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.12/vue.esm.browser.min.js"
+}, {
+  "name": "Vuex",
+  "fileName": "vuex.esm.browser.min.js",
+  "type": "esm",
+  "version": "3.6.2",
+  "source":"https://cdnjs.cloudflare.com/ajax/libs/vuex/3.6.2/vuex.esm.browser.min.js"
+}]

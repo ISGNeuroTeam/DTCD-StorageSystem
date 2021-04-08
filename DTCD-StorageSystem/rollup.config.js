@@ -1,3 +1,4 @@
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import pluginMeta from './src/Plugin.Meta';
 
 const watch = Boolean(process.env.ROLLUP_WATCH);
@@ -6,7 +7,9 @@ const pluginName = pluginMeta.name;
 const outputFile = `${pluginName}.js`;
 const outputDirectory = watch ? `./../../DTCD/server/plugins/DTCD-${pluginName}` : `./build`;
 
-const plugins = [];
+const plugins = [
+  nodeResolve(),
+];
 
 export default {
   plugins,

@@ -1,4 +1,5 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { babel } from '@rollup/plugin-babel';
 import pluginMeta from './src/Plugin.Meta';
 
 const watch = Boolean(process.env.ROLLUP_WATCH);
@@ -9,6 +10,9 @@ const outputDirectory = watch ? `./../../DTCD/server/plugins/DTCD-${pluginName}`
 
 const plugins = [
   nodeResolve(),
+  babel({
+    babelHelpers: 'bundled',
+  }),
 ];
 
 export default {

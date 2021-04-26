@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [UNRELEASED]
 ### Changed
 - plugin build mechanism
+- plugin inner architecture
+  - remove `Vue` and `Vuex` dependencies
+  - redesigned module system
 
 ## [0.3.0] - 2021-02-16
 ### Removed

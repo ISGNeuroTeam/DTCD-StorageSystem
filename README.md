@@ -14,9 +14,8 @@ In order to use this plugin you need to download it, build and move build-file t
 
 ### Building
 
-Install plugin dependencies:
+Install plugin SDK:
 - `make sdk`
-- `make dependencies`
 
 Create build directory:
 - `cd ./DTCD-StorageSystem`
@@ -42,7 +41,7 @@ make pack
 ## Clear dependencies
 
 ```
-make clear
+make clean
 ```
 
 ## Deployment

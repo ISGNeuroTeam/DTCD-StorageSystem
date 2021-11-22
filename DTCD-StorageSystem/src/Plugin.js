@@ -64,6 +64,18 @@ export class StorageSystem extends SystemPlugin {
     return this.#tokenModule;
   }
 
+  setPluginConfig(config = {}) {
+    const { tokens } = config;
+    for (const [key, value] of tokens) {
+      this.tokenStorage.addRecord(key, value);
+    }
+  }
+
+  getPluginConfig() {
+    const tokens = this.tokenStorage.state;
+    return { tokens };
+  }
+
   /**
    * Returns plugin metadata object.
    * @method @static

@@ -155,4 +155,8 @@ export class TokenModule extends BaseModule {
     return Array.from(this.#state.keys());
   }
 
+  get state() {
+    return Array.from(this.#state.entries());
+  }
+
 }

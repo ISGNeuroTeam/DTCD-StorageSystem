@@ -6,7 +6,6 @@ import { RecordDuplicateError } from '@/utils/errors/recordErrors';
  * @class @extends BaseModule
  */
 export class TokenModule extends BaseModule {
-
   /**
    * Private JavaScript Map object instance.
    * @property @private
@@ -26,15 +25,23 @@ export class TokenModule extends BaseModule {
   #logSystem;
 
   /**
+   * Private instance of the EventSystemAdapter class.
+   * @property @private
+   */
+  #eventSystem;
+
+  /**
    * Initialize TokenModule instance.
    * @constructor
    * @param {string} storage StorageSystem name.
    * @param {Object} logSystem StorageSystem`s LogSystemAdapter instance.
+   * @param {Object} eventSystem StorageSystem`s EventSystemAdapter instance.
    */
-  constructor (storage, logSystem) {
+  constructor(storage, logSystem, eventSystem) {
     super();
     this.#storage = storage;
     this.#logSystem = logSystem;
+    this.#eventSystem = eventSystem;
     this.#logSystem.debug(`${this.#storage} --> new TokenModule()`);
     this.#logSystem.info(`${this.#storage} token module: initialization complete`);
   }
@@ -46,7 +53,7 @@ export class TokenModule extends BaseModule {
    * @param {*} value Record value.
    * @param {boolean} checkUnique Check record key uniqueness.
    */
-  #setRecord (key, value, checkUnique = false) {
+  #setRecord(key, value, checkUnique = false) {
     try {
       const addedKey = BaseModule.checkRecordKey(key);
       const addedValue = BaseModule.checkRecordValue(value);
@@ -56,7 +63,9 @@ export class TokenModule extends BaseModule {
       }
 
       this.#state.set(addedKey, addedValue);
-      this.#logSystem.debug(`${this.#storage} TokenModule state: SET "${addedKey}" => ${addedValue}`);
+      this.#logSystem.debug(
+        `${this.#storage} TokenModule state: SET "${addedKey}" => ${addedValue}`
+      );
 
       return addedKey;
     } catch (err) {
@@ -73,9 +82,10 @@ export class TokenModule extends BaseModule {
    * @param {*} value Record value.
    * @returns {TokenModule} This TokenModule instance.
    */
-  addRecord (key, value) {
+  addRecord(key, value) {
     const settedKey = this.#setRecord(key, value, true);
     this.#logSystem.info(`${this.#storage} token module: added "${settedKey}" record`);
+    this.#eventSystem.publishEvent('TokenUpdate', { token: key });
     return this;
   }
 
@@ -86,9 +96,10 @@ export class TokenModule extends BaseModule {
    * @param {*} value Record value.
    * @returns {TokenModule} This TokenModule instance.
    */
-  putRecord (key, value) {
+  putRecord(key, value) {
     const settedKey = this.#setRecord(key, value);
     this.#logSystem.info(`${this.#storage} token module: putted "${settedKey}" record`);
+    this.#eventSystem.publishEvent('TokenUpdate', { token: key });
     return this;
   }
 
@@ -98,7 +109,7 @@ export class TokenModule extends BaseModule {
    * @param {string} key Record key name.
    * @returns {*} Record value.
    */
-  getRecord (key) {
+  getRecord(key) {
     this.#logSystem.debug(`${this.#storage} TokenModule state --> get(${key})`);
     return this.#state.get(key);
   }
@@ -109,7 +120,7 @@ export class TokenModule extends BaseModule {
    * @param {string} key Record key name.
    * @returns {number} Record existence.
    */
-  hasRecord (key) {
+  hasRecord(key) {
     this.#logSystem.debug(`${this.#storage} TokenModule state --> has(${key})`);
     return this.#state.has(key);
   }
@@ -120,7 +131,7 @@ export class TokenModule extends BaseModule {
    * @param {string} key Record key name.
    * @returns {boolean} Success of record deletion.
    */
-  removeRecord (key) {
+  removeRecord(key) {
     this.#logSystem.debug(`${this.#storage} TokenModule state --> delete(${key})`);
     return this.#state.delete(key);
   }
@@ -130,7 +141,7 @@ export class TokenModule extends BaseModule {
    * @method @public @override
    * @returns {number} Number of deleted records.
    */
-  clearModule () {
+  clearModule() {
     this.#logSystem.debug(`${this.#storage} TokenModule state --> clear()`);
     const countBeforeClear = this.recordCount;
     this.#state.clear();
@@ -142,7 +153,7 @@ export class TokenModule extends BaseModule {
    * @property @public
    * @returns {number} Number of records.
    */
-  get recordCount () {
+  get recordCount() {
     return this.#state.size;
   }
 
@@ -151,12 +162,11 @@ export class TokenModule extends BaseModule {
    * @property @public
    * @returns {string[]} Array of records keys.
    */
-  get recordList () {
+  get recordList() {
     return Array.from(this.#state.keys());
   }
 
   get state() {
     return Array.from(this.#state.entries());
   }
-
 }

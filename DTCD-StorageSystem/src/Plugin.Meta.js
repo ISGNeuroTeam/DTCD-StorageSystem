@@ -1,5 +1,7 @@
 export default {
   type: 'core',
   name: 'StorageSystem',
-  title: 'Storage System',
+  title: 'Система хранения данных',
+  version: '0.3.0',
+  priority: 3,
 };

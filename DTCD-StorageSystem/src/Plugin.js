@@ -41,10 +41,10 @@ export class StorageSystem extends SystemPlugin {
     super();
 
     const systemName = `StorageSystem[${guid}]`;
-    this.#logSystem = new LogSystemAdapter('0.4.0', guid, pluginMeta.name);
+    this.#logSystem = new LogSystemAdapter('0.5.0', guid, pluginMeta.name);
     this.#logSystem.debug(`Start of ${systemName} creation`);
 
-    this.#eventSystem = new EventSystemAdapter('0.3.0', guid);
+    this.#eventSystem = new EventSystemAdapter('0.4.0', guid);
 
     this.#sessionModule = new SessionModule(systemName, this.#logSystem);
     this.#tokenModule = new TokenModule(systemName, this.#logSystem, this.#eventSystem);

@@ -1,7 +1,9 @@
+import { version } from './../package.json';
+
 export default {
   type: 'core',
   name: 'StorageSystem',
   title: 'Система хранения данных',
-  version: '0.3.0',
+  version,
   priority: 3,
 };

@@ -1,6 +1,6 @@
 {
   "name": "dtcd-storagesystem",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "DTCD storage system plugin",
   "private": true,
   "homepage": "https://github.com/ISGNeuroTeam/DTCD-StorageSystem",
@@ -20,6 +20,7 @@
     "babel-jest": "26.6.3",
     "jest": "26.6.3",
     "rollup": "2.44.0",
-    "rollup-plugin-livereload": "2.0.0"
+    "rollup-plugin-livereload": "2.0.0",
+    "@rollup/plugin-json": "^4.1.0"
   }
 }

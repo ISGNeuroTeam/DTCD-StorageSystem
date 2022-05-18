@@ -1,6 +1,7 @@
 import { SystemPlugin, LogSystemAdapter, EventSystemAdapter } from 'SDK';
 import { SessionModule } from './modules/SessionModule';
 import { TokenModule } from './modules/TokenModule';
+import { PersistModule } from './modules/PersistModule';
 import pluginMeta from './Plugin.Meta';
 
 /**
@@ -19,6 +20,12 @@ export class StorageSystem extends SystemPlugin {
    * @property @private
    */
   #tokenModule;
+
+  /**
+   * Private instance of the PersistModule class.
+   * @property @private
+   */
+  #persistModule;
 
   /**
    * Private instance of the LogSystemAdapter class.
@@ -48,6 +55,7 @@ export class StorageSystem extends SystemPlugin {
 
     this.#sessionModule = new SessionModule(systemName, this.#logSystem);
     this.#tokenModule = new TokenModule(systemName, this.#logSystem, this.#eventSystem);
+    this.#persistModule = new PersistModule(systemName, this.#logSystem);
 
     this.#logSystem.debug(`End of ${systemName} creation`);
     this.#logSystem.info(`${systemName} initialization complete`);
@@ -69,6 +77,15 @@ export class StorageSystem extends SystemPlugin {
    */
   get tokenStorage() {
     return this.#tokenModule;
+  }
+
+  /**
+   * Persist module.
+   * @property @public
+   * @returns {PersistModule} PersistModule instance.
+   */
+  get persist() {
+    return this.#persistModule;
   }
 
   setPluginConfig(config = {}) {

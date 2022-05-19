@@ -1,6 +1,6 @@
 import { SystemPlugin, LogSystemAdapter, EventSystemAdapter } from 'SDK';
-import { SessionModule } from './modules/SessionModule';
 import { TokenModule } from './modules/TokenModule';
+import SessionModule from './modules/SessionModule/SessionModule';
 import BrowserModule from './modules/BrowserModule/BrowserModule';
 import pluginMeta from './Plugin.Meta';
 

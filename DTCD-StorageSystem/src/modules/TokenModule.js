@@ -1,11 +1,11 @@
-import { BaseModule } from './_BaseModule';
+import BaseModuleScope from '@/utils/BaseModuleScope';
 import { RecordDuplicateError } from '@/utils/errors/recordErrors';
 
 /**
  * Storage system token module class.
- * @class @extends BaseModule
+ * @class @extends BaseModuleScope
  */
-export class TokenModule extends BaseModule {
+export class TokenModule extends BaseModuleScope {
   /**
    * Private JavaScript Map object instance.
    * @property @private
@@ -55,8 +55,8 @@ export class TokenModule extends BaseModule {
    */
   #setRecord(key, value, checkUnique = false) {
     try {
-      const addedKey = BaseModule.checkRecordKey(key);
-      const addedValue = BaseModule.checkRecordValue(value);
+      const addedKey = BaseModuleScope.checkRecordKey(key);
+      const addedValue = BaseModuleScope.checkRecordValue(value);
 
       if (checkUnique && this.hasRecord(addedKey)) {
         throw new RecordDuplicateError(addedKey);

@@ -1,11 +1,11 @@
-import { BaseModule } from './_BaseModule';
+import BaseModuleScope from '@/utils/BaseModuleScope';
 import { RecordDuplicateError } from '@/utils/errors/recordErrors';
 
 /**
- * Storage system session module class.
- * @class @extends BaseModule
+ * Storage system session module scope class.
+ * @class @extends BaseModuleScope
  */
-export class SessionModule extends BaseModule {
+export default class SessionModuleScope extends BaseModuleScope {
 
   /**
    * Private JavaScript Map object instance.
@@ -48,8 +48,8 @@ export class SessionModule extends BaseModule {
    */
   #setRecord (key, value, checkUnique = false) {
     try {
-      const addedKey = BaseModule.checkRecordKey(key);
-      const addedValue = BaseModule.checkRecordValue(value);
+      const addedKey = BaseModuleScope.checkRecordKey(key);
+      const addedValue = BaseModuleScope.checkRecordValue(value);
 
       if (checkUnique && this.hasRecord(addedKey)) {
         throw new RecordDuplicateError(addedKey);

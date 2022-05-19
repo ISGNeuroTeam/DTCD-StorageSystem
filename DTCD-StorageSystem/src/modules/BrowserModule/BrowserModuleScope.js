@@ -1,7 +1,7 @@
-import { BaseModule } from './../_BaseModule';
+import BaseModuleScope from '@/utils/BaseModuleScope';
 import { RecordDuplicateError } from '@/utils/errors/recordErrors';
 
-export default class BrowserModuleScope extends BaseModule {
+export default class BrowserModuleScope extends BaseModuleScope {
 
   #db;
   #store;
@@ -101,8 +101,8 @@ export default class BrowserModuleScope extends BaseModule {
 
   async #setRecord(key, value, checkUnique = false) {
     try {
-      const addedKey = BaseModule.checkRecordKey(key);
-      const addedValue = BaseModule.checkRecordValue(value);
+      const addedKey = BaseModuleScope.checkRecordKey(key);
+      const addedValue = BaseModuleScope.checkRecordValue(value);
 
       if (checkUnique && await this.hasRecord(addedKey)) {
         throw new RecordDuplicateError(addedKey);

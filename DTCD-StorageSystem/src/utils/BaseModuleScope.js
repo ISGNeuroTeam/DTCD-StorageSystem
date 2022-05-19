@@ -2,17 +2,17 @@ import { checkKey, checkValue } from '@/utils/recordChecks';
 import { AbstractClassInstanceError, MethodImplementError } from '@/utils/errors/abstractClassErrors';
 
 /**
- * Storage system base module class.
+ * Storage system base module scope class.
  * @class @abstract
  */
-export class BaseModule {
+export default class BaseModuleScope {
 
   /**
-   * Initialize BaseModule instance.
+   * Initialize BaseModuleScope instance.
    * @constructor
    */
   constructor () {
-    if (this.constructor === BaseModule) {
+    if (this.constructor === BaseModuleScope) {
       throw new AbstractClassInstanceError(this.constructor.name);
     }
   }

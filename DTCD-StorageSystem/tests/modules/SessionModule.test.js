@@ -1,6 +1,6 @@
 import { StorageSystem } from '@/Plugin';
-import { BaseModule } from '@/modules/_BaseModule';
 import { initApp } from 'utils/initApp';
+import BaseModuleScope from '@/utils/BaseModuleScope';
 
 import { methodTestList } from './methods/_list';
 import { propertyTestList } from './properties/_list';
@@ -15,16 +15,28 @@ describe('Check the session module of the StorageSystem instance:', () => {
     expect(sessionModule).toBeDefined();
   });
 
-  test('SessionModule extends BaseModule class', () => {
-    expect(sessionModule).toBeInstanceOf(BaseModule);
+  test('SessionModule extends BaseModuleScope class', () => {
+    expect(sessionModule).toBeInstanceOf(BaseModuleScope);
   });
 
-  describe('Check public methods:', () => {
-    methodTestList.forEach(test => test(sessionModule));
-  });
+  describe('Check SessionModule scopes', () => {
+    for (const scopeName of Object.keys(sessionModule)) {
+      describe(`Check ${scopeName} scope:`, () => {
+        const scope = sessionModule[scopeName];
 
-  describe('Check public properties:', () => {
-    propertyTestList.forEach(test => test(sessionModule));
+        test('Scope extends BaseModuleScope class', () => {
+          expect(scope).toBeInstanceOf(BaseModuleScope);
+        });
+
+        describe('Check public methods:', () => {
+          methodTestList.forEach(test => test(scope));
+        });
+
+        describe(`Check public properties of ${scope} scope:`, () => {
+          propertyTestList.forEach(test => test(scope));
+        });
+      });
+    }
   });
 
 });

@@ -1,32 +1,30 @@
 import { StorageSystem } from '@/Plugin';
-import { BaseModule } from '@/modules/_BaseModule';
 import { initApp } from 'utils/initApp';
+import BaseModuleScope from '@/utils/BaseModuleScope';
 
 import { methodTestList } from './methods/_list';
 import { propertyTestList } from './properties/_list';
 
 initApp();
 
-describe('Check the persist module of the StorageSystem instance:', () => {
+describe('Check the browser module of the StorageSystem instance:', () => {
 
-  const persistModule = new StorageSystem('guid1').persist;
+  const browserModule = new StorageSystem('guid1').browser;
 
-  test('PersistModule exists', () => {
-    expect(persistModule).toBeDefined();
+  test('BrowserModule exists', () => {
+    expect(browserModule).toBeDefined();
   });
 
-  test('PersistModule extends BaseModule class', () => {
-    expect(persistModule).toBeInstanceOf(BaseModule);
-  });
+  // TODO: async test for BrowserModule
+  // describe('Check BrowserModule scopes', () => {
+  //   for (const scopeName of Object.keys(browserModule)) {
+  //     console.log(scopeName + 'scope');
+  //     const scope = browserModule[scopeName];
 
-  describe('Check public methods:', () => {
-    // TODO: make test for async methods (returns Promise)
-    // methodTestList.forEach(test => test(persistModule));
-  });
-
-  describe('Check public properties:', () => {
-    // TODO: make test for async props (returns Promise)
-    // propertyTestList.forEach(test => test(persistModule));
-  });
+  //     test('Scope extends BaseModuleScope class', () => {
+  //       expect(scope).toBeInstanceOf(BaseModuleScope);
+  //     });
+  //   }
+  // });
 
 });

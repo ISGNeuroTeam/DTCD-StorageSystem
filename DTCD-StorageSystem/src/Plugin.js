@@ -1,7 +1,7 @@
 import { SystemPlugin, LogSystemAdapter, EventSystemAdapter } from 'SDK';
-import { SessionModule } from './modules/SessionModule';
 import { TokenModule } from './modules/TokenModule';
-import { PersistModule } from './modules/PersistModule';
+import SessionModule from './modules/SessionModule/SessionModule';
+import BrowserModule from './modules/BrowserModule/BrowserModule';
 import pluginMeta from './Plugin.Meta';
 
 /**
@@ -22,10 +22,10 @@ export class StorageSystem extends SystemPlugin {
   #tokenModule;
 
   /**
-   * Private instance of the PersistModule class.
+   * Private instance of the BrowserModule class.
    * @property @private
    */
-  #persistModule;
+  #browserModule;
 
   /**
    * Private instance of the LogSystemAdapter class.
@@ -55,7 +55,7 @@ export class StorageSystem extends SystemPlugin {
 
     this.#sessionModule = new SessionModule(systemName, this.#logSystem);
     this.#tokenModule = new TokenModule(systemName, this.#logSystem, this.#eventSystem);
-    this.#persistModule = new PersistModule(systemName, this.#logSystem);
+    this.#browserModule = new BrowserModule(this.#logSystem);
 
     this.#logSystem.debug(`End of ${systemName} creation`);
     this.#logSystem.info(`${systemName} initialization complete`);
@@ -80,12 +80,12 @@ export class StorageSystem extends SystemPlugin {
   }
 
   /**
-   * Persist module.
+   * Browser module.
    * @property @public
-   * @returns {PersistModule} PersistModule instance.
+   * @returns {BrowserModule} BrowserModule instance.
    */
-  get persist() {
-    return this.#persistModule;
+  get browser() {
+    return this.#browserModule;
   }
 
   setPluginConfig(config = {}) {

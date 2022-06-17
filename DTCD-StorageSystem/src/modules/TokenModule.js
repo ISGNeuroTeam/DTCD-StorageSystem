@@ -1,28 +1,22 @@
-import BaseModuleScope from '@/utils/BaseModuleScope';
-import { RecordDuplicateError } from '@/utils/errors/recordErrors';
+import SessionModuleScope from './SessionModule/SessionModuleScope';
 
 /**
  * Storage system token module class.
- * @class @extends BaseModuleScope
+ * @class @extends SessionModuleScope
  */
-export class TokenModule extends BaseModuleScope {
-  /**
-   * Private JavaScript Map object instance.
-   * @property @private
-   */
-  #state = new Map();
-
-  /**
-   * StorageSystem name.
-   * @property @private
-   */
-  #storage;
+export class TokenModule extends SessionModuleScope {
 
   /**
    * Private instance of the LogSystemAdapter class.
    * @property @private
    */
   #logSystem;
+
+  /**
+   * Map object instance that contains default values.
+   * @property @private
+   */
+  #stateDefaultValues = new Map();
 
   /**
    * Private instance of the EventSystemAdapter class.
@@ -38,135 +32,74 @@ export class TokenModule extends BaseModuleScope {
    * @param {Object} eventSystem StorageSystem`s EventSystemAdapter instance.
    */
   constructor(storage, logSystem, eventSystem) {
-    super();
-    this.#storage = storage;
+    super(storage, logSystem);
     this.#logSystem = logSystem;
     this.#eventSystem = eventSystem;
-    this.#logSystem.debug(`${this.#storage} --> new TokenModule()`);
-    this.#logSystem.info(`${this.#storage} token module: initialization complete`);
-  }
-
-  /**
-   * Helper method for `addRecord()` and `putRecord()` public methods.
-   * @method @private
-   * @param {string} key Record key name.
-   * @param {*} value Record value.
-   * @param {boolean} checkUnique Check record key uniqueness.
-   */
-  #setRecord(key, value, checkUnique = false) {
-    try {
-      const addedKey = BaseModuleScope.checkRecordKey(key);
-      const addedValue = BaseModuleScope.checkRecordValue(value);
-
-      if (checkUnique && this.hasRecord(addedKey)) {
-        throw new RecordDuplicateError(addedKey);
-      }
-
-      this.#state.set(addedKey, addedValue);
-      this.#logSystem.debug(
-        `${this.#storage} TokenModule state: SET "${addedKey}" => ${addedValue}`
-      );
-
-      return addedKey;
-    } catch (err) {
-      this.#logSystem.debug(`${this.#storage} TokenModule: ${err.stack}`);
-      this.#logSystem.info(`${this.#storage} token module ${err.message}`);
-      throw err;
-    }
   }
 
   /**
    * Create a new record.
-   * @method @public @override
+   * @public @override
    * @param {string} key Record key name.
    * @param {*} value Record value.
    * @returns {TokenModule} This TokenModule instance.
    */
   addRecord(key, value) {
-    const settedKey = this.#setRecord(key, value, true);
-    this.#logSystem.info(`${this.#storage} token module: added "${settedKey}" record`);
+    super.addRecord(key, value);
     this.#eventSystem.publishEvent('TokenUpdate', { token: key });
     return this;
   }
 
   /**
    * Replace record value by key or create a new record.
-   * @method @public @override
+   * @public @override
    * @param {string} key Record key name.
    * @param {*} value Record value.
    * @returns {TokenModule} This TokenModule instance.
    */
   putRecord(key, value) {
-    const settedKey = this.#setRecord(key, value);
-    this.#logSystem.info(`${this.#storage} token module: putted "${settedKey}" record`);
+    super.putRecord(key, value);
     this.#eventSystem.publishEvent('TokenUpdate', { token: key });
     return this;
   }
 
   /**
-   * Get record value by key.
-   * @method @public @override
+   * Get record value by key. If no record value in state then default value will be returned.
+   * @public @override
    * @param {string} key Record key name.
    * @returns {*} Record value.
    */
   getRecord(key) {
-    this.#logSystem.debug(`${this.#storage} TokenModule state --> get(${key})`);
-    return this.#state.get(key);
+    if (this.hasRecord(key)) {
+      return super.getRecord(key);
+    } else {
+      return this.getDefaultRecord(key);
+    }
   }
 
   /**
-   * Check record existence by key.
-   * @method @public @override
+   * Replace record value by key or create a new record to state default values.
+   * @public
    * @param {string} key Record key name.
-   * @returns {number} Record existence.
+   * @param {*} value Record value.
    */
-  hasRecord(key) {
-    this.#logSystem.debug(`${this.#storage} TokenModule state --> has(${key})`);
-    return this.#state.has(key);
+  setDefaultRecord (key, value) {
+    this.#stateDefaultValues.set(key, value);
+    this.#logSystem.info(`${this.storage} module: setted "${key}" record to state default values`);
   }
 
   /**
-   * Delete record by key.
-   * @method @public @override
+   * Get record with default value by key.
+   * @public
    * @param {string} key Record key name.
-   * @returns {boolean} Success of record deletion.
+   * @returns {*} Record value.
    */
-  removeRecord(key) {
-    this.#logSystem.debug(`${this.#storage} TokenModule state --> delete(${key})`);
-    return this.#state.delete(key);
+  getDefaultRecord (key) {
+    this.#logSystem.debug(`${this.storage} state default values --> get(${key})`);
+    return this.#stateDefaultValues.get(key);
   }
 
-  /**
-   * Delete all records.
-   * @method @public @override
-   * @returns {number} Number of deleted records.
-   */
-  clearModule() {
-    this.#logSystem.debug(`${this.#storage} TokenModule state --> clear()`);
-    const countBeforeClear = this.recordCount;
-    this.#state.clear();
-    return countBeforeClear;
-  }
-
-  /**
-   * Number of module records.
-   * @property @public
-   * @returns {number} Number of records.
-   */
-  get recordCount() {
-    return this.#state.size;
-  }
-
-  /**
-   * List of module records keys.
-   * @property @public
-   * @returns {string[]} Array of records keys.
-   */
-  get recordList() {
-    return Array.from(this.#state.keys());
-  }
-
-  get state() {
-    return Array.from(this.#state.entries());
+  get stateDefaultValues() {
+    return Array.from(this.#stateDefaultValues.entries());
   }
 }

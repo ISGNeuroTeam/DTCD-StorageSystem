@@ -36,7 +36,7 @@ export default class SessionModuleScope extends BaseModuleScope {
     this.#storage = storage;
     this.#logSystem = logSystem;
     this.#logSystem.debug(`${this.#storage} --> new SessionModule()`);
-    this.#logSystem.info(`${this.#storage} session module: initialization complete`);
+    this.#logSystem.info(`${this.#storage} module: initialization complete`);
   }
 
   /**
@@ -56,12 +56,12 @@ export default class SessionModuleScope extends BaseModuleScope {
       }
 
       this.#state.set(addedKey, addedValue);
-      this.#logSystem.debug(`${this.#storage} SessionModule state: SET "${addedKey}" => ${addedValue}`);
+      this.#logSystem.debug(`${this.#storage} state: SET "${addedKey}" => ${addedValue}`);
 
       return addedKey;
     } catch (err) {
-      this.#logSystem.debug(`${this.#storage} SessionModule: ${err.stack}`);
-      this.#logSystem.info(`${this.#storage} session module ${err.message}`);
+      this.#logSystem.debug(`${this.#storage} module: ${err.stack}`);
+      this.#logSystem.info(`${this.#storage} module ${err.message}`);
       throw err;
     }
   }
@@ -75,7 +75,7 @@ export default class SessionModuleScope extends BaseModuleScope {
    */
   addRecord (key, value) {
     const settedKey = this.#setRecord(key, value, true);
-    this.#logSystem.info(`${this.#storage} session module: added "${settedKey}" record`);
+    this.#logSystem.info(`${this.#storage} module: added "${settedKey}" record`);
     return this;
   }
 
@@ -88,7 +88,7 @@ export default class SessionModuleScope extends BaseModuleScope {
    */
   putRecord (key, value) {
     const settedKey = this.#setRecord(key, value);
-    this.#logSystem.info(`${this.#storage} session module: putted "${settedKey}" record`);
+    this.#logSystem.info(`${this.#storage} module: putted "${settedKey}" record`);
     return this;
   }
 
@@ -99,7 +99,7 @@ export default class SessionModuleScope extends BaseModuleScope {
    * @returns {*} Record value.
    */
   getRecord (key) {
-    this.#logSystem.debug(`${this.#storage} SessionModule state --> get(${key})`);
+    this.#logSystem.debug(`${this.#storage} state --> get(${key})`);
     return this.#state.get(key);
   }
 
@@ -110,7 +110,7 @@ export default class SessionModuleScope extends BaseModuleScope {
    * @returns {number} Record existence.
    */
   hasRecord (key) {
-    this.#logSystem.debug(`${this.#storage} SessionModule state --> has(${key})`);
+    this.#logSystem.debug(`${this.#storage} state --> has(${key})`);
     return this.#state.has(key);
   }
 
@@ -121,7 +121,7 @@ export default class SessionModuleScope extends BaseModuleScope {
    * @returns {boolean} Success of record deletion.
    */
   removeRecord (key) {
-    this.#logSystem.debug(`${this.#storage} SessionModule state --> delete(${key})`);
+    this.#logSystem.debug(`${this.#storage} state --> delete(${key})`);
     return this.#state.delete(key);
   }
 
@@ -131,7 +131,7 @@ export default class SessionModuleScope extends BaseModuleScope {
    * @returns {number} Number of deleted records.
    */
   clearModule () {
-    this.#logSystem.debug(`${this.#storage} SessionModule state --> clear()`);
+    this.#logSystem.debug(`${this.#storage} state --> clear()`);
     const countBeforeClear = this.recordCount;
     this.#state.clear();
     return countBeforeClear;
@@ -155,4 +155,11 @@ export default class SessionModuleScope extends BaseModuleScope {
     return Array.from(this.#state.keys());
   }
 
+  get state () {
+    return Array.from(this.#state.entries());
+  }
+
+  get storage () {
+    return this.#storage;
+  }
 }

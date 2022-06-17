@@ -90,13 +90,16 @@ export class StorageSystem extends SystemPlugin {
 
   setPluginConfig(config = {}) {
     const { tokens } = config;
-    for (const [key, value] of tokens) {
-      if (!this.tokenStorage.hasRecord(key)) this.tokenStorage.addRecord(key, value);
+
+    if (tokens) {
+      for (const [key, value] of tokens) {
+        this.tokenStorage.setDefaultRecord(key, value);
+      }
     }
   }
 
   getPluginConfig() {
-    const tokens = this.tokenStorage.state;
+    const tokens = this.tokenStorage.stateDefaultValues;
     return { tokens };
   }
 

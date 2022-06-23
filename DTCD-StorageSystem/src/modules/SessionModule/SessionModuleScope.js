@@ -107,7 +107,7 @@ export default class SessionModuleScope extends BaseModuleScope {
    * Check record existence by key.
    * @method @public @override
    * @param {string} key Record key name.
-   * @returns {number} Record existence.
+   * @returns {boolean} Record existence.
    */
   hasRecord (key) {
     this.#logSystem.debug(`${this.#storage} state --> has(${key})`);

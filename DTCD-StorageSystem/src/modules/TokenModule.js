@@ -77,7 +77,7 @@ export class TokenModule extends SessionModuleScope {
    * Check record existence by key in state and in state default values. 
    * @method @public @override
    * @param {string} key Record key name.
-   * @returns {number} Record existence.
+   * @returns {boolean} Record existence.
    */
   hasRecord (key) {
     return super.hasRecord(key) || this.#stateDefaultValues.has(key);

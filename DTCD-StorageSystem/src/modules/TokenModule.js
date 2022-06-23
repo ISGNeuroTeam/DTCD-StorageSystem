@@ -70,11 +70,29 @@ export class TokenModule extends SessionModuleScope {
    * @returns {*} Record value.
    */
   getRecord(key) {
-    if (this.hasRecord(key)) {
-      return super.getRecord(key);
-    } else {
-      return this.getDefaultRecord(key);
-    }
+    return super.getRecord(key) || this.getDefaultRecord(key);
+  }
+
+  /**
+   * Check record existence by key in state and in state default values. 
+   * @method @public @override
+   * @param {string} key Record key name.
+   * @returns {number} Record existence.
+   */
+  hasRecord (key) {
+    return super.hasRecord(key) || this.#stateDefaultValues.has(key);
+  }
+
+  /**
+   * Delete record by key.
+   * @method @public @override
+   * @param {string} key Record key name.
+   * @returns {boolean} Success of record deletion.
+   */
+  removeRecord (key) {
+    const result = super.removeRecord(key);
+    this.#eventSystem.publishEvent('TokenUpdate', { token: key });
+    return result;
   }
 
   /**
@@ -97,6 +115,17 @@ export class TokenModule extends SessionModuleScope {
   getDefaultRecord (key) {
     this.#logSystem.debug(`${this.storage} state default values --> get(${key})`);
     return this.#stateDefaultValues.get(key);
+  }
+
+  /**
+   * Delete record by key in state default values.
+   * @method @public @override
+   * @param {string} key Record key name.
+   * @returns {boolean} Success of record deletion.
+   */
+  removeDefaultRecord (key) {
+    this.#logSystem.debug(`${this.storage} state default values --> delete(${key})`);
+    return this.#stateDefaultValues.delete(key);
   }
 
   get stateDefaultValues() {

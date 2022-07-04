@@ -11,10 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - module scopes
 - sessionModule scopes
+- default values in TokenModule
 
 ### Changed
 
 - persistModule is replaced by the browserModule
+- refactoring TokenModule 
 
 ## [0.6.0]
 

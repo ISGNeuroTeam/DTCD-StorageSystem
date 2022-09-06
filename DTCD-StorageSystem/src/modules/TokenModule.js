@@ -69,8 +69,14 @@ export class TokenModule extends SessionModuleScope {
    * @param {string} key Record key name.
    * @returns {*} Record value.
    */
-  getRecord(key) {
-    return super.getRecord(key) || this.getDefaultRecord(key);
+  getRecord (key) {
+    const stateMainValue = super.getRecord(key);
+
+    if (stateMainValue === undefined) {
+      return this.getDefaultRecord(key);
+    } else {
+      return stateMainValue;
+    }
   }
 
   /**

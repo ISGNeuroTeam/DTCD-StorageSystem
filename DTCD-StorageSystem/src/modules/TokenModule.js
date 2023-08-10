@@ -42,10 +42,16 @@ export class TokenModule extends SessionModuleScope {
    * @public @override
    * @param {string} key Record key name.
    * @param {*} value Record value.
+   * @param {*} [defaultValue] Record default value.
    * @returns {TokenModule} This TokenModule instance.
    */
-  addRecord(key, value) {
+  addRecord(key, value, defaultValue) {
     super.addRecord(key, value);
+    
+    if (defaultValue !== null && defaultValue !== undefined) {
+      this.setDefaultRecord(key, defaultValue);
+    }
+    
     this.#eventSystem.publishEvent('TokenUpdate', { token: key });
     return this;
   }
@@ -55,10 +61,16 @@ export class TokenModule extends SessionModuleScope {
    * @public @override
    * @param {string} key Record key name.
    * @param {*} value Record value.
+   * @param {*} [defaultValue] Record default value.
    * @returns {TokenModule} This TokenModule instance.
    */
-  putRecord(key, value) {
+  putRecord(key, value, defaultValue) {
     super.putRecord(key, value);
+    
+    if (defaultValue !== null && defaultValue !== undefined) {
+      this.setDefaultRecord(key, defaultValue);
+    }
+    
     this.#eventSystem.publishEvent('TokenUpdate', { token: key });
     return this;
   }

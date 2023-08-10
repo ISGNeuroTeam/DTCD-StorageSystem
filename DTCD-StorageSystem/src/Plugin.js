@@ -1,7 +1,12 @@
-import { SystemPlugin, LogSystemAdapter, EventSystemAdapter } from 'SDK';
-import { TokenModule } from './modules/TokenModule';
+import {
+  SystemPlugin,
+  LogSystemAdapter,
+  EventSystemAdapter,
+} from 'SDK';
+;
 import SessionModule from './modules/SessionModule/SessionModule';
 import BrowserModule from './modules/BrowserModule/BrowserModule';
+
 import pluginMeta from './Plugin.Meta';
 
 /**
@@ -14,12 +19,6 @@ export class StorageSystem extends SystemPlugin {
    * @property @private
    */
   #sessionModule;
-
-  /**
-   * Private instance of the TokenModule class.
-   * @property @private
-   */
-  #tokenModule;
 
   /**
    * Private instance of the BrowserModule class.
@@ -51,10 +50,9 @@ export class StorageSystem extends SystemPlugin {
     this.#logSystem = new LogSystemAdapter('0.5.0', guid, pluginMeta.name);
     this.#logSystem.debug(`Start of ${systemName} creation`);
 
-    this.#eventSystem = new EventSystemAdapter('0.4.0', guid);
+    this.#eventSystem = new EventSystemAdapter('0.6.0', guid);
 
-    this.#sessionModule = new SessionModule(systemName, this.#logSystem);
-    this.#tokenModule = new TokenModule(systemName, this.#logSystem, this.#eventSystem);
+    this.#sessionModule = new SessionModule(systemName, this.#logSystem, this.#eventSystem);
     this.#browserModule = new BrowserModule(this.#logSystem);
 
     this.#logSystem.debug(`End of ${systemName} creation`);
@@ -72,11 +70,11 @@ export class StorageSystem extends SystemPlugin {
 
   /**
    * Token module.
-   * @property @public
+   * @property @public @deprecated
    * @returns {TokenModule} TokenModule instance.
    */
   get tokenStorage() {
-    return this.#tokenModule;
+    return this.session.tokenModule;
   }
 
   /**
@@ -89,18 +87,31 @@ export class StorageSystem extends SystemPlugin {
   }
 
   setPluginConfig(config = {}) {
-    const { tokens } = config;
+    const {
+      tokens,
+      defaultTokens,
+    } = config;
 
     if (tokens) {
       for (const [key, value] of tokens) {
-        this.tokenStorage.setDefaultRecord(key, value);
+        this.session.tokenStorage.addRecord(key, value);
+      }
+    }
+    if (defaultTokens) {
+      for (const [key, value] of defaultTokens) {
+        this.session.tokenStorage.setDefaultRecord(key, value);
       }
     }
   }
 
   getPluginConfig() {
-    const tokens = this.tokenStorage.stateDefaultValues;
-    return { tokens };
+    const tokens = [...this.session.tokenStorage];
+    const defaultTokens = this.session.tokenStorage.stateDefaultValues;
+
+    return {
+      tokens,
+      defaultTokens,
+    };
   }
 
   /**

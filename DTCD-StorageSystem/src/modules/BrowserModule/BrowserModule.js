@@ -91,4 +91,13 @@ export default class BrowserModule {
     this.#logSystem.debug(`BrowserModule: IndexedDB upgraded successfully`);
   }
 
+  get name() {
+    return 'browser';
+  }
+
+  get scopes () {
+    return this.#scopes.map(scope => {     
+      return scope.id;
+    });
+  }
 }

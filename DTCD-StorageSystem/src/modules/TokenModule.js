@@ -137,4 +137,8 @@ export class TokenModule extends SessionModuleScope {
   get stateDefaultValues() {
     return Array.from(this.#stateDefaultValues.entries());
   }
+
+  get name() {
+    return 'tokenStorage';
+  }
 }

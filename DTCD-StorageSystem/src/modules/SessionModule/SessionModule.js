@@ -2,18 +2,28 @@ import SessionModuleScope from './SessionModuleScope';
 
 export default class SessionModule extends SessionModuleScope {
 
-  #scopes = ['user', 'dash', 'system'];
+  #names = ['user', 'dash', 'system'];
+  #scopes = [];
 
   constructor(systemName, logSystem) {
     super(systemName, logSystem);
-    this.#scopes.forEach(scope => {
-      Object.defineProperty(this, scope, {
+    this.#names.forEach(name => {
+      const scope = new SessionModuleScope(systemName, logSystem);
+      this.#scopes.push({scope, name})
+      Object.defineProperty(this, name, {
         writable: false,
         enumerable: true,
         configurable: false,
-        value: new SessionModuleScope(systemName, logSystem),
+        value: scope,
       });
     });
   }
 
+  get scopes () {
+    return this.#names;
+  }
+
+  get name() {
+    return 'session';
+  }
 }

@@ -38,7 +38,7 @@ export class StorageSystem extends SystemPlugin {
    * @property @private
    */
   #eventSystem;
-
+  #modules;
   /**
    * Initialize StorageSystem instance.
    * @constructor
@@ -56,6 +56,12 @@ export class StorageSystem extends SystemPlugin {
     this.#sessionModule = new SessionModule(systemName, this.#logSystem);
     this.#tokenModule = new TokenModule(systemName, this.#logSystem, this.#eventSystem);
     this.#browserModule = new BrowserModule(this.#logSystem);
+
+    this.#modules = [
+      this.#sessionModule,
+      this.#tokenModule,
+      this.#browserModule
+    ];
 
     this.#logSystem.debug(`End of ${systemName} creation`);
     this.#logSystem.info(`${systemName} initialization complete`);
@@ -111,4 +117,9 @@ export class StorageSystem extends SystemPlugin {
   static getRegistrationMeta() {
     return pluginMeta;
   }
+
+  get modules() { 
+    return this.#modules;
+  }
+
 }

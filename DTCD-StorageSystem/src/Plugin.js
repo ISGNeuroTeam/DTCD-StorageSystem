@@ -105,7 +105,7 @@ export class StorageSystem extends SystemPlugin {
   }
 
   getPluginConfig() {
-    const tokens = [...this.session.tokenStorage];
+    const tokens = this.session.tokenStorage.state;
     const defaultTokens = this.session.tokenStorage.stateDefaultValues;
 
     return {

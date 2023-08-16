@@ -70,11 +70,12 @@ export class StorageSystem extends SystemPlugin {
 
   /**
    * Token module.
-   * @property @public @deprecated
+   * @property @public
+   * @deprecated Use `StorageSystem.session.tokenStorage`.
    * @returns {TokenModule} TokenModule instance.
    */
   get tokenStorage() {
-    return this.session.tokenModule;
+    return this.session.tokenStorage;
   }
 
   /**

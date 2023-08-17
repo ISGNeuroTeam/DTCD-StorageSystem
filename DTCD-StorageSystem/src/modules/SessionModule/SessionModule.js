@@ -1,4 +1,4 @@
-import { TokenModule } from '../TokenModule';
+import { TokenModule } from '../TokenModule/TokenModule';
 
 import SessionModuleScope from './SessionModuleScope';
 

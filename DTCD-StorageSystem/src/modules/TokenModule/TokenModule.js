@@ -1,4 +1,4 @@
-import SessionModuleScope from './SessionModule/SessionModuleScope';
+import SessionModuleScope from '../SessionModule/SessionModuleScope';
 
 /**
  * Storage system token module class.

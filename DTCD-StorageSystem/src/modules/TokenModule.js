@@ -149,4 +149,29 @@ export class TokenModule extends SessionModuleScope {
   get stateDefaultValues() {
     return Array.from(this.#stateDefaultValues.entries());
   }
+
+  setConfig(config = {}) {
+    const {
+      tokens,
+      defaultTokens,
+    } = config;
+
+    if (tokens) {
+      for (const [key, value] of tokens) {
+        this.addRecord(key, value);
+      }
+    }
+    if (defaultTokens) {
+      for (const [key, value] of defaultTokens) {
+        this.setDefaultRecord(key, value);
+      }
+    }
+  }
+
+  getConfig() {
+    return {
+      tokens: this.state,
+      defaultTokens: this.stateDefaultValues,
+    };
+  }
 }

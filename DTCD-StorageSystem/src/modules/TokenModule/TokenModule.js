@@ -146,10 +146,19 @@ export class TokenModule extends SessionModuleScope {
     return this.#stateDefaultValues.delete(key);
   }
 
+  /**
+   * @returns {Array[]} Array with a copy of the default values.
+   */
   get stateDefaultValues() {
     return Array.from(this.#stateDefaultValues.entries());
   }
 
+  /**
+   * Addition of values to token storage from config.
+   * @param {Object} config Object with token module data.
+   * @param {Array[]} config.tokens Array with token values.
+   * @param {Array[]} config.defaultTokens Array with token default values.
+   */
   setConfig(config = {}) {
     const {
       tokens,
@@ -168,6 +177,9 @@ export class TokenModule extends SessionModuleScope {
     }
   }
 
+  /**
+   * @returns {Object} Object with token module data.
+   */
   getConfig() {
     return {
       tokens: this.state,

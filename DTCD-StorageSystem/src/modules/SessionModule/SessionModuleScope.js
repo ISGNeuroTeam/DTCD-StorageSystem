@@ -155,10 +155,16 @@ export default class SessionModuleScope extends BaseModuleScope {
     return Array.from(this.#state.keys());
   }
 
+  /**
+   * @returns {Array[]} Array with copies of storage records.
+   */
   get state () {
     return Array.from(this.#state.entries());
   }
 
+  /**
+   * @returns {String} Name of the storage.
+   */
   get storage () {
     return this.#storage;
   }

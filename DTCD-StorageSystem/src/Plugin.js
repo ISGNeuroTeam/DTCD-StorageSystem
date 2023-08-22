@@ -87,6 +87,11 @@ export class StorageSystem extends SystemPlugin {
     return this.#browserModule;
   }
 
+  /**
+   * Setting plugin data and configuration.
+   * @param {Object} config Object with plugin data and configuration.
+   * @param {Object} config.tokenModuleConfig Object with data for token module.
+   */
   setPluginConfig(config = {}) {
     const {
       tokenModuleConfig,
@@ -95,6 +100,10 @@ export class StorageSystem extends SystemPlugin {
     if (tokenModuleConfig) this.session.tokenStorage.setConfig(tokenModuleConfig);
   }
 
+  /**
+   * Getting plugin data and configuration.
+   * @returns {Object} Object with plugin data.
+   */
   getPluginConfig() {
     const tokenModuleConfig = this.session.tokenStorage.getConfig();
 

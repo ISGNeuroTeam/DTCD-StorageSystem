@@ -1,10 +1,10 @@
-import SessionModuleScope from '../SessionModule/SessionModuleScope';
+import SessionModuleScope from './SessionModuleScope';
 
 /**
  * Storage system token module class.
  * @class @extends SessionModuleScope
  */
-export class TokenModule extends SessionModuleScope {
+export default class TokenModule extends SessionModuleScope {
 
   /**
    * Private instance of the LogSystemAdapter class.

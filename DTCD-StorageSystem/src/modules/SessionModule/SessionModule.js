@@ -1,6 +1,5 @@
-import { TokenModule } from '../TokenModule/TokenModule';
-
 import SessionModuleScope from './SessionModuleScope';
+import TokenModule from './TokenModule';
 
 export default class SessionModule extends SessionModuleScope {
 

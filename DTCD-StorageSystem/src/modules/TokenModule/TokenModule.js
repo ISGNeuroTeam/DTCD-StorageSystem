@@ -147,6 +147,18 @@ export class TokenModule extends SessionModuleScope {
   }
 
   /**
+   * Delete all records.
+   * @method @public @override
+   * @returns {number} Number of deleted records.
+   */
+  clearModule () {
+    const countBeforeClear = super.clearModule();
+    this.#logSystem.debug(`${this.storage} stateDefaultValues --> clear()`);
+    this.#stateDefaultValues.clear();
+    return countBeforeClear;
+  }
+
+  /**
    * @returns {Array[]} Array with a copy of the default values.
    */
   get stateDefaultValues() {

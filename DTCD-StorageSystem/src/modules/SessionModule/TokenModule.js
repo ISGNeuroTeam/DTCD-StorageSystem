@@ -1,10 +1,10 @@
-import SessionModuleScope from './SessionModule/SessionModuleScope';
+import SessionModuleScope from './SessionModuleScope';
 
 /**
  * Storage system token module class.
  * @class @extends SessionModuleScope
  */
-export class TokenModule extends SessionModuleScope {
+export default class TokenModule extends SessionModuleScope {
 
   /**
    * Private instance of the LogSystemAdapter class.
@@ -42,10 +42,16 @@ export class TokenModule extends SessionModuleScope {
    * @public @override
    * @param {string} key Record key name.
    * @param {*} value Record value.
+   * @param {*} [defaultValue] Record default value.
    * @returns {TokenModule} This TokenModule instance.
    */
-  addRecord(key, value) {
+  addRecord(key, value, defaultValue) {
     super.addRecord(key, value);
+    
+    if (defaultValue !== null && defaultValue !== undefined) {
+      this.setDefaultRecord(key, defaultValue);
+    }
+    
     this.#eventSystem.publishEvent('TokenUpdate', { token: key });
     return this;
   }
@@ -55,10 +61,16 @@ export class TokenModule extends SessionModuleScope {
    * @public @override
    * @param {string} key Record key name.
    * @param {*} value Record value.
+   * @param {*} [defaultValue] Record default value.
    * @returns {TokenModule} This TokenModule instance.
    */
-  putRecord(key, value) {
+  putRecord(key, value, defaultValue) {
     super.putRecord(key, value);
+    
+    if (defaultValue !== null && defaultValue !== undefined) {
+      this.setDefaultRecord(key, defaultValue);
+    }
+    
     this.#eventSystem.publishEvent('TokenUpdate', { token: key });
     return this;
   }
@@ -134,7 +146,56 @@ export class TokenModule extends SessionModuleScope {
     return this.#stateDefaultValues.delete(key);
   }
 
+  /**
+   * Delete all records.
+   * @method @public @override
+   * @returns {number} Number of deleted records.
+   */
+  clearModule () {
+    const countBeforeClear = super.clearModule();
+    this.#logSystem.debug(`${this.storage} stateDefaultValues --> clear()`);
+    this.#stateDefaultValues.clear();
+    return countBeforeClear;
+  }
+
+  /**
+   * @returns {Array[]} Array with a copy of the default values.
+   */
   get stateDefaultValues() {
     return Array.from(this.#stateDefaultValues.entries());
+  }
+
+  /**
+   * Addition of values to token storage from config.
+   * @param {Object} config Object with token module data.
+   * @param {Array[]} config.tokens Array with token values.
+   * @param {Array[]} config.defaultTokens Array with token default values.
+   */
+  setConfig(config = {}) {
+    const {
+      tokens,
+      defaultTokens,
+    } = config;
+
+    if (tokens) {
+      for (const [key, value] of tokens) {
+        this.addRecord(key, value);
+      }
+    }
+    if (defaultTokens) {
+      for (const [key, value] of defaultTokens) {
+        this.setDefaultRecord(key, value);
+      }
+    }
+  }
+
+  /**
+   * @returns {Object} Object with token module data.
+   */
+  getConfig() {
+    return {
+      tokens: this.state,
+      defaultTokens: this.stateDefaultValues,
+    };
   }
 }

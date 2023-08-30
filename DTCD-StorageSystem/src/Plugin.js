@@ -1,7 +1,12 @@
-import { SystemPlugin, LogSystemAdapter, EventSystemAdapter } from 'SDK';
-import { TokenModule } from './modules/TokenModule';
+import {
+  SystemPlugin,
+  LogSystemAdapter,
+  EventSystemAdapter,
+} from 'SDK';
+;
 import SessionModule from './modules/SessionModule/SessionModule';
 import BrowserModule from './modules/BrowserModule/BrowserModule';
+
 import pluginMeta from './Plugin.Meta';
 
 /**
@@ -14,12 +19,6 @@ export class StorageSystem extends SystemPlugin {
    * @property @private
    */
   #sessionModule;
-
-  /**
-   * Private instance of the TokenModule class.
-   * @property @private
-   */
-  #tokenModule;
 
   /**
    * Private instance of the BrowserModule class.
@@ -51,10 +50,9 @@ export class StorageSystem extends SystemPlugin {
     this.#logSystem = new LogSystemAdapter('0.5.0', guid, pluginMeta.name);
     this.#logSystem.debug(`Start of ${systemName} creation`);
 
-    this.#eventSystem = new EventSystemAdapter('0.4.0', guid);
+    this.#eventSystem = new EventSystemAdapter('0.6.0', guid);
 
-    this.#sessionModule = new SessionModule(systemName, this.#logSystem);
-    this.#tokenModule = new TokenModule(systemName, this.#logSystem, this.#eventSystem);
+    this.#sessionModule = new SessionModule(systemName, this.#logSystem, this.#eventSystem);
     this.#browserModule = new BrowserModule(this.#logSystem);
 
     this.#logSystem.debug(`End of ${systemName} creation`);
@@ -73,10 +71,11 @@ export class StorageSystem extends SystemPlugin {
   /**
    * Token module.
    * @property @public
+   * @deprecated Use `StorageSystem.session.tokenStorage`.
    * @returns {TokenModule} TokenModule instance.
    */
   get tokenStorage() {
-    return this.#tokenModule;
+    return this.session.tokenStorage;
   }
 
   /**
@@ -88,19 +87,29 @@ export class StorageSystem extends SystemPlugin {
     return this.#browserModule;
   }
 
+  /**
+   * Setting plugin data and configuration.
+   * @param {Object} config Object with plugin data and configuration.
+   * @param {Object} config.tokenModuleConfig Object with data for token module.
+   */
   setPluginConfig(config = {}) {
-    const { tokens } = config;
+    const {
+      tokenModuleConfig,
+    } = config;
 
-    if (tokens) {
-      for (const [key, value] of tokens) {
-        this.tokenStorage.setDefaultRecord(key, value);
-      }
-    }
+    if (tokenModuleConfig) this.session.tokenStorage.setConfig(tokenModuleConfig);
   }
 
+  /**
+   * Getting plugin data and configuration.
+   * @returns {Object} Object with plugin data.
+   */
   getPluginConfig() {
-    const tokens = this.tokenStorage.stateDefaultValues;
-    return { tokens };
+    const tokenModuleConfig = this.session.tokenStorage.getConfig();
+
+    return {
+      tokenModuleConfig,
+    };
   }
 
   /**

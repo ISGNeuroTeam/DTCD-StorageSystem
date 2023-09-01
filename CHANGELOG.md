@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [UNRELEASED]
 
+### Added
+
+- reset system hook
+
 ### Changed
 
 - replace tokenStorage to SessionModule
 - getting and setting tokens and default tokens from plugin config
 - added the third argument in addRecord/putRecord methods of TokenModule
+- added try-catch statement in method of addition records from plugin config
 
 ## [0.9.0]
 

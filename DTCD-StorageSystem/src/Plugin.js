@@ -39,6 +39,12 @@ export class StorageSystem extends SystemPlugin {
   #eventSystem;
 
   /**
+   * Name of StorageSystem instance.
+   * @property @private
+   */
+  #systemName;
+
+  /**
    * Initialize StorageSystem instance.
    * @constructor
    * @param {string} guid System instance GUID.
@@ -46,17 +52,17 @@ export class StorageSystem extends SystemPlugin {
   constructor(guid) {
     super();
 
-    const systemName = `StorageSystem[${guid}]`;
+    this.#systemName = `StorageSystem[${guid}]`;
     this.#logSystem = new LogSystemAdapter('0.5.0', guid, pluginMeta.name);
-    this.#logSystem.debug(`Start of ${systemName} creation`);
+    this.#logSystem.debug(`Start of ${this.#systemName} creation`);
 
     this.#eventSystem = new EventSystemAdapter('0.6.0', guid);
 
-    this.#sessionModule = new SessionModule(systemName, this.#logSystem, this.#eventSystem);
+    this.#sessionModule = new SessionModule(this.#systemName, this.#logSystem, this.#eventSystem);
     this.#browserModule = new BrowserModule(this.#logSystem);
 
-    this.#logSystem.debug(`End of ${systemName} creation`);
-    this.#logSystem.info(`${systemName} initialization complete`);
+    this.#logSystem.debug(`End of ${this.#systemName} creation`);
+    this.#logSystem.info(`${this.#systemName} initialization complete`);
   }
 
   /**
@@ -85,6 +91,11 @@ export class StorageSystem extends SystemPlugin {
    */
   get browser() {
     return this.#browserModule;
+  }
+
+  resetSystem() {
+    this.session.tokenStorage.clearModule();
+    this.#logSystem.info(`${this.#systemName} reseting is completed.`);
   }
 
   /**

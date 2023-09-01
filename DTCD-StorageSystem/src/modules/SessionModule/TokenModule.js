@@ -172,6 +172,8 @@ export default class TokenModule extends SessionModuleScope {
    * @param {Array[]} config.defaultTokens Array with token default values.
    */
   setConfig(config = {}) {
+    this.#logSystem.debug(`${this.storage} TokenModule --> setConfig()`);
+
     const {
       tokens,
       defaultTokens,
@@ -179,12 +181,22 @@ export default class TokenModule extends SessionModuleScope {
 
     if (tokens) {
       for (const [key, value] of tokens) {
-        this.addRecord(key, value);
+        try {
+          this.addRecord(key, value);
+        } catch (error) {
+          console.error(error);
+          this.#logSystem.error(`${this.storage} tokenStorage.tokens --> setConfig(): ${error}`);
+        }
       }
     }
     if (defaultTokens) {
       for (const [key, value] of defaultTokens) {
-        this.setDefaultRecord(key, value);
+        try {
+          this.setDefaultRecord(key, value);
+        } catch (error) {
+          console.error(error);
+          this.#logSystem.error(`${this.storage} tokenStorage.defaultTokens --> setConfig(): ${error}`);
+        }
       }
     }
   }
@@ -193,6 +205,8 @@ export default class TokenModule extends SessionModuleScope {
    * @returns {Object} Object with token module data.
    */
   getConfig() {
+    this.#logSystem.debug(`${this.storage} TokenModule --> getConfig()`);
+
     return {
       tokens: this.state,
       defaultTokens: this.stateDefaultValues,
